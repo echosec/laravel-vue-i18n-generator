@@ -25,7 +25,7 @@ class GenerateInclude extends Command
      */
     public function handle(): int
     {
-        $root = $this->getLangPath();
+        $root = $this->qualifyPath(config('vue-i18n-generator.langPath', '/resources/lang'));
         $config = config('vue-i18n-generator');
 
         // options
@@ -94,17 +94,6 @@ class GenerateInclude extends Command
     {
         $supportedFormats = ['es6', 'umd', 'json'];
         return in_array($format, $supportedFormats);
-    }
-
-    private function getLangPath(): string
-    {
-        $configuredPath = config('vue-i18n-generator.langPath', '/lang');
-
-        if (function_exists('lang_path') && in_array($configuredPath, ['lang', '/lang', '\\lang'], true)) {
-            return lang_path();
-        }
-
-        return $this->qualifyPath($configuredPath);
     }
 
     private function qualifyPath(string $path): string

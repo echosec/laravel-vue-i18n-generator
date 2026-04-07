@@ -7,7 +7,7 @@ Supports Laravel 9-12 and PHP 8.2+.
 
 ## Laravel 9+ notice
 
-Laravel now uses `lang/` as the default translation directory. This package now defaults to that path. If your application stores translations elsewhere, publish the config and update `langPath`.
+This package defaults to `resources/lang`. If your application stores translations elsewhere, publish the config and update `langPath`.
 
 
 ## Install the package
@@ -21,12 +21,6 @@ Publish the package config if you want to customize paths or generation options:
 
 ```
 php artisan vendor:publish --tag=vue-i18n-generator-config
-```
-
-If your Laravel 12 project does not have a `lang/` directory yet, create it first:
-
-```
-php artisan lang:publish
 ```
 
 ## Using vue-i18n
@@ -187,7 +181,7 @@ php artisan vue-i18n:generate --multi{-locales}
 The generator adjusts the strings in order to work with vue-i18n's named formatting,
 so you can reuse your Laravel translations with parameters.
 
-lang/en/message.php:
+resources/lang/en/message.php:
 ```php
 return [
     'hello' => 'Hello :name',

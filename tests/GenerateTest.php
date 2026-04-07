@@ -1,10 +1,13 @@
 <?php
 
-use MartinLindhe\VueInternationalizationGenerator\Generator;
+declare(strict_types=1);
 
-class GenerateTest extends \PHPUnit_Framework_TestCase
+use MartinLindhe\VueInternationalizationGenerator\Generator;
+use PHPUnit\Framework\TestCase;
+
+final class GenerateTest extends TestCase
 {
-    private function generateLocaleFilesFrom(array $arr)
+    private function generateLocaleFilesFrom(array $arr): string
     {
         $root = sys_get_temp_dir() . '/' . sha1(microtime(true) . mt_rand());
         
@@ -27,7 +30,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         return $root;
     }
 
-    private function destroyLocaleFilesFrom(array $arr, $root)
+    private function destroyLocaleFilesFrom(array $arr, string $root): void
     {
         foreach ($arr as $key => $val) {
 
@@ -49,7 +52,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    function testBasic()
+    public function testBasic(): void
     {
         $arr = [
             'en' => [
@@ -86,7 +89,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicES6Format()
+    public function testBasicES6Format(): void
     {
         $format = 'es6';
 
@@ -125,7 +128,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithUMDFormat()
+    public function testBasicWithUMDFormat(): void
     {
         $format = 'umd';
         $arr = [
@@ -170,7 +173,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithJSONFormat()
+    public function testBasicWithJSONFormat(): void
     {
         $format = 'json';
         $arr = [
@@ -208,22 +211,32 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testInvalidFormat()
+    public function testUnknownFormatFallsBackToJson(): void
     {
         $format = 'es5';
-        $arr = [];
+        $arr = [
+            'en' => [
+                'help' => [
+                    'yes' => 'yes',
+                ],
+            ],
+        ];
 
         $root = $this->generateLocaleFilesFrom($arr);
-        try {
-            (new Generator([]))->generateFromPath($root, $format);
-        } catch(RuntimeException $e) {
-            $this->assertEquals('Invalid format passed: ' . $format, $e->getMessage());
-
-        }
+        $this->assertSame(
+            '{' . PHP_EOL
+            . '    "en": {' . PHP_EOL
+            . '        "help": {' . PHP_EOL
+            . '            "yes": "yes"' . PHP_EOL
+            . '        }' . PHP_EOL
+            . '    }' . PHP_EOL
+            . '}' . PHP_EOL,
+            (new Generator([]))->generateFromPath($root, $format)
+        );
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithTranslationString()
+    public function testBasicWithTranslationString(): void
     {
         $arr = [
             'en' => [
@@ -246,7 +259,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithEscapedTranslationString()
+    public function testBasicWithEscapedTranslationString(): void
     {
         $arr = [
             'en' => [
@@ -271,7 +284,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithVendor()
+    public function testBasicWithVendor(): void
     {
         $arr = [
             'en' => [
@@ -338,7 +351,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testBasicWithVuexLib()
+    public function testBasicWithVuexLib(): void
     {
         $arr = [
             'en' => [
@@ -377,7 +390,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testNamed()
+    public function testNamed(): void
     {
         $arr = [
             'en' => [
@@ -408,7 +421,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testNamedWithEscaped()
+    public function testNamedWithEscaped(): void
     {
         $arr = [
             'en' => [
@@ -439,7 +452,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testEscapedEscapeCharacter()
+    public function testEscapedEscapeCharacter(): void
     {
         $arr = [
             'en' => [
@@ -464,7 +477,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testShouldNotTouchHtmlTags()
+    public function testShouldNotTouchHtmlTags(): void
     {
         $arr = [
             'en' => [
@@ -493,7 +506,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
-    function testPluralization()
+    public function testPluralization(): void
     {
         $arr = [
             'en' => [

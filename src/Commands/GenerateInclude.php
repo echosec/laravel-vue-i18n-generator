@@ -25,7 +25,7 @@ class GenerateInclude extends Command
      */
     public function handle(): int
     {
-        $root = $this->qualifyPath(config('vue-i18n-generator.langPath', '/resources/lang'));
+        $root = base_path() . config('vue-i18n-generator.langPath', '/resources/lang');
         $config = config('vue-i18n-generator');
 
         // options
@@ -81,10 +81,10 @@ class GenerateInclude extends Command
     private function getFileName(?string $fileNameOption): string
     {
         if (isset($fileNameOption)) {
-            return $this->qualifyPath($fileNameOption);
+            return base_path() . $fileNameOption;
         }
 
-        return $this->qualifyPath(config('vue-i18n-generator.jsFile'));
+        return base_path() . config('vue-i18n-generator.jsFile');
     }
 
     /**
@@ -94,21 +94,5 @@ class GenerateInclude extends Command
     {
         $supportedFormats = ['es6', 'umd', 'json'];
         return in_array($format, $supportedFormats);
-    }
-
-    private function qualifyPath(string $path): string
-    {
-        if ($this->isAbsolutePath($path)) {
-            return $path;
-        }
-
-        return base_path(ltrim($path, '/\\'));
-    }
-
-    private function isAbsolutePath(string $path): bool
-    {
-        return str_starts_with($path, '/')
-            || str_starts_with($path, '\\')
-            || preg_match('/^[A-Za-z]:[\\\\\\/]/', $path) === 1;
     }
 }

@@ -1,18 +1,13 @@
 ## About
 
-**NO LONGER MAINTAINED**
-
-
-[![Build Status](https://travis-ci.org/martinlindhe/laravel-vue-i18n-generator.png?branch=master)](https://travis-ci.org/martinlindhe/laravel-vue-i18n-generator)
-
-
-Laravel 5 package that allows you to share your [Laravel localizations](https://laravel.com/docs/5.8/localization)
+Laravel package that allows you to share your [Laravel localizations](https://laravel.com/docs/12.x/localization)
 with your [vue](http://vuejs.org/) front-end, using [vue-i18n](https://github.com/kazupon/vue-i18n) or [vuex-i18n](https://github.com/dkfbasel/vuex-i18n).
 
+Supports Laravel 9-12 and PHP 8.2+.
 
-## Laravel 5.7 notice!
+## Laravel 9+ notice
 
-Configuration paths have changed in Laravel 5.7, in order for this package to function properly you need to configure correct paths for jsPath and jsFile in your `config\vue-i18n-generator.php`.
+This package defaults to `resources/lang`. If your application stores translations elsewhere, publish the config and update `langPath`.
 
 
 ## Install the package
@@ -20,19 +15,12 @@ Configuration paths have changed in Laravel 5.7, in order for this package to fu
 In your project:
 ```composer require martinlindhe/laravel-vue-i18n-generator --dev```
 
-### For Laravel 5.4 and below:
-For older versions of the framework:
+Laravel package discovery will register the service provider automatically.
 
-Register the service provider in ```config/app.php```
-
-```php
-MartinLindhe\VueInternationalizationGenerator\GeneratorProvider::class,
-```
-
-Next, publish the package default config:
+Publish the package config if you want to customize paths or generation options:
 
 ```
-php artisan vendor:publish --provider="MartinLindhe\VueInternationalizationGenerator\GeneratorProvider"
+php artisan vendor:publish --tag=vue-i18n-generator-config
 ```
 
 ## Using vue-i18n
@@ -193,7 +181,7 @@ php artisan vue-i18n:generate --multi{-locales}
 The generator adjusts the strings in order to work with vue-i18n's named formatting,
 so you can reuse your Laravel translations with parameters.
 
-resource/lang/message.php:
+resources/lang/en/message.php:
 ```php
 return [
     'hello' => 'Hello :name',
@@ -226,7 +214,7 @@ Vue template:
 
 - The generated file is an ES6 module.
 
-The more sophisticated pluralization localization as described [here](https://laravel.com/docs/5.5/localization#pluralization) is not supported since neither vue-i18n or vuex-i18n support this.
+The more sophisticated pluralization localization as described [here](https://laravel.com/docs/12.x/localization#pluralization) is not supported since neither vue-i18n or vuex-i18n support this.
 
 # License
 

@@ -2,7 +2,7 @@
 
 use DirectoryIterator;
 use Exception;
-use App;
+use Illuminate\Support\Facades\App;
 use Traversable;
 
 class Generator
@@ -73,7 +73,7 @@ class Generator
 
             $noExt = $this->removeExtension($fileinfo->getFilename());
             if ($noExt !== '') {
-                if (class_exists('App')) {
+                if (App::getFacadeRoot() !== null) {
                     App::setLocale($noExt);
                 }
 
@@ -136,7 +136,7 @@ class Generator
             ) {
                 $noExt = $this->removeExtension($fileinfo->getFilename());
                 if ($noExt !== '') {
-                    if (class_exists('App')) {
+                    if (App::getFacadeRoot() !== null) {
                         App::setLocale($noExt);
                     }
                     if (!in_array($noExt, $this->availableLocales)) {

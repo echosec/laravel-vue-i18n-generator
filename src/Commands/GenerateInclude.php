@@ -1,8 +1,8 @@
 <?php namespace MartinLindhe\VueInternationalizationGenerator\Commands;
 
 use Illuminate\Console\Command;
-
 use MartinLindhe\VueInternationalizationGenerator\Generator;
+use RuntimeException;
 
 class GenerateInclude extends Command
 {
@@ -22,12 +22,10 @@ class GenerateInclude extends Command
 
     /**
      * Execute the console command.
-     * @return mixed
-     * @throws \Exception
      */
-    public function handle()
+    public function handle(): int
     {
-        $root = base_path() . config('vue-i18n-generator.langPath');
+        $root = base_path() . config('vue-i18n-generator.langPath', '/resources/lang');
         $config = config('vue-i18n-generator');
 
         // options
@@ -45,7 +43,7 @@ class GenerateInclude extends Command
         }
 
         if (!$this->isValidFormat($format)) {
-            throw new \RuntimeException('Invalid format passed: ' . $format);
+            throw new RuntimeException('Invalid format passed: ' . $format);
         }
 
         if ($multipleFiles || $multipleLocales) {
@@ -56,7 +54,7 @@ class GenerateInclude extends Command
                 $this->info("Written to : " . $files);
             }
 
-            return;
+            return self::SUCCESS;
         }
 
         if ($langFiles) {
@@ -73,13 +71,14 @@ class GenerateInclude extends Command
         if ($config['showOutputMessages']) {
             $this->info("Written to : " . $jsFile);
         }
+
+        return self::SUCCESS;
     }
 
     /**
      * @param string $fileNameOption
-     * @return string
      */
-    private function getFileName($fileNameOption)
+    private function getFileName(?string $fileNameOption): string
     {
         if (isset($fileNameOption)) {
             return base_path() . $fileNameOption;
@@ -90,9 +89,8 @@ class GenerateInclude extends Command
 
     /**
      * @param string $format
-     * @return boolean
      */
-    private function isValidFormat($format)
+    private function isValidFormat(string $format): bool
     {
         $supportedFormats = ['es6', 'umd', 'json'];
         return in_array($format, $supportedFormats);

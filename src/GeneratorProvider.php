@@ -1,57 +1,34 @@
 <?php namespace MartinLindhe\VueInternationalizationGenerator;
 
 use Illuminate\Support\ServiceProvider;
+use MartinLindhe\VueInternationalizationGenerator\Commands\GenerateInclude;
 
 class GeneratorProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-    /**
      * Perform post-registration booting of services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        $this->app->singleton('vue-i18n.generate', function () {
-            return new Commands\GenerateInclude;
-        });
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/config/vue-i18n-generator.php' => config_path('vue-i18n-generator.php'),
+            ], 'vue-i18n-generator-config');
 
-        $this->commands(
-            'vue-i18n.generate'
-        );
-
-        $this->publishes([
-            __DIR__.'/config/vue-i18n-generator.php' => config_path('vue-i18n-generator.php'),
-        ]);
-
-         $this->mergeConfigFrom(
-            __DIR__.'/config/vue-i18n-generator.php',
-            'vue-i18n-generator'
-        );
+            $this->commands([
+                GenerateInclude::class,
+            ]);
+        }
     }
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
-    }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return ['vue-i18n-generator'];
+        $this->mergeConfigFrom(
+            __DIR__.'/config/vue-i18n-generator.php',
+            'vue-i18n-generator'
+        );
     }
 }
